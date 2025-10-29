@@ -7,7 +7,7 @@
 ---
 
 ### Team Members  
-- **Student 1:** Mahinour Abdelgawad — [900231870]  
+- **Student 1:** Mahinour Abdelgawad — 900231870  
 - **Student 2:** Joudy Elgayar — 900222142  
 
 ---
