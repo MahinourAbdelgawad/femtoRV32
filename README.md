@@ -8,7 +8,7 @@
 [🔗 View Block Diagram on draw.io](https://drive.google.com/file/d/1gZo5aAjyp70mv1yOmbNhKu9LxNPKf0Rx/view?usp=sharing)
 
 ### Team Members  
-- **Student 1:** Mahinour Abdelgawad — [900231870]  
+- **Student 1:** Mahinour Abdelgawad — 900231870  
 - **Student 2:** Joudy Elgayar — 900222142  
 
 ---
