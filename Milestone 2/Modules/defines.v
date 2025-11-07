@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 `define     IR_rs1          19:15
 `define     IR_rs2          24:20
 `define     IR_rd           11:7

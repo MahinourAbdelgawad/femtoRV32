@@ -1,4 +1,20 @@
 `timescale 1ns / 1ps
+`include "defines.v"
+
+/*******************************************************************
+*
+* Module: ControlUnit.v
+* Project: femtorv32
+* Authors: Mahinour Abdelgawad mahinourabdelgawad@aucegypt.edu
+           Joudy ElGayar Joudyelgayar@aucegypt.edu
+           
+* Description: The control unit generates control signals based on opcode
+*
+* Change history: 28/10/2025 - Created module for Computer Architecture Lab 6
+* 
+*
+**********************************************************************/
+
 
 module ControlUnit(
     input [4:0] inst,
@@ -8,7 +24,7 @@ module ControlUnit(
     
     always @ (*) begin
         case (inst) 
-            5'b01100: begin // R Format
+            `OPCODE_Arith_R: begin // R Format
                 Branch = 0;
                 MemRead = 0;
                 MemtoReg = 0;
@@ -18,7 +34,7 @@ module ControlUnit(
                 RegWrite = 1;    
             end
             
-            5'b00000: begin // LW
+            `OPCODE_Load: begin // LW
                 Branch = 0;
                 MemRead = 1;
                 MemtoReg = 1;
@@ -29,7 +45,7 @@ module ControlUnit(
                 
             end
             
-            5'b01000: begin // SW
+            `OPCODE_Store: begin // SW
                 Branch = 0;
                 MemRead = 0;
                 MemtoReg = 0;
@@ -40,7 +56,7 @@ module ControlUnit(
                 
             end
             
-            5'b11000: begin // BEQ
+            `OPCODE_Branch: begin // B-Type
                 Branch = 1;
                 MemRead = 0;
                 MemtoReg = 0;
