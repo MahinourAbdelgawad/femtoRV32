@@ -8,8 +8,8 @@
 [🔗 View Block Diagram on draw.io](https://drive.google.com/file/d/1gZo5aAjyp70mv1yOmbNhKu9LxNPKf0Rx/view?usp=sharing)
 
 ### Team Members  
-- **Student 1:** Mahinour Abdelgawad — 900231870  
-- **Student 2:** Joudy Elgayar — 900222142  
+- Mahinour Abdelgawad
+- Joudy Elgayar
 
 ---
 
@@ -19,7 +19,7 @@
 ---
 
 ## Milestone 2  
-**Deadline:** Thursday November 6
+**Deadline:** Monday November 10
 
 **Checklist:**  
 - [ ] Single cycle datapath block diagram
@@ -28,6 +28,21 @@
 
 No thorough testing is required at this stage.
 Testing on FPGA is optional at this stage.
+
+**MS2 Progress List:**
+- [ ] Add I-Type support
+- [ ] Test I-Type instructions
+- [x] Add B-Type support
+- [ ] Test B-Type instructions
+- [x] Add J-Type support
+- [ ] Test J-Type instructions
+- [ ] Add S-Type support
+- [ ] Test S-Type instructions
+- [ ] Add U-Type support
+- [ ] Test U-Type instructions
+- [ ] Handle ECALL, EBREAK, PAUSE, FENCE, and FENCE.TSO 
+- [ ] Test ECALL, EBREAK, PAUSE, FENCE, and FENCE.TSO 
+- [ ] Implement shifter0.v
 
 ---
 
@@ -123,3 +138,7 @@ The **zip file** must include the following:
   - Issues encountered and solutions  
   - Screenshots of test waveforms  
   - Any additional supporting documentation
+
+
+# References
+[🔗 RV32I Base Instruction Set](https://five-embeddev.com/riscv-user-isa-manual/Priv-v1.12/instr-table.html)

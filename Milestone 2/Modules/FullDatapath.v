@@ -10,20 +10,24 @@
 * Description: The full datapath that integrates all the modules
 
 * Change history: 28/10/2025 - Created module 
-*                 7/11/2025 - (1) Updated module to suppot B Type (integrated Branch Control Unit)
-*                             (2) Replaced ALU with the new one
-*                             (3) added wires to decode all parts of the instruction
-*                             (4) included defines file and cleaned up the module
-*                             (5) replaced the 2x1 PC_mux with a 4x1 mux
-*
-* Unresolved: Missing parameters in ALU, PC_mux, check comments above each
+*                 7/11/2025 - (1) Replaced ALU with the new one
+*                             (2) added wires to decode func3 and func7
+*                             (2) included defines file and cleaned up the module
+*                             (3) Updated module to suppot B Type
+*                                   --> integrated branch control unit
+*                                   --> replaced the 2x1 PC_mux with a 4x1 mux
+*                             (6) Updated module to support JALR and JAL
+*                                   --> added jump signal and another ALUSrc to control unit
+*                                   --> added a second 2x1 mux for alu source
+*                                   --> replaced 2x1 writeback mux with a 4x1
+* Unresolved: Missing parameter in ALU
 **********************************************************************/
 
 module FullDatapath(
     input clk,               
     input reset,
     output [31:0] Instruction_out,
-    output [13:0] control_signals_out,
+    output [15:0] control_signals_out,
     output [31:0] PC_out_to_ssd, PC_4_out, PC_adder_ssd, PC_in_to_ssd,
      rs1_data, rs2_data, write_data_to_ssd, Imm_to_ssd, shift_out_to_ssd, muxALU_to_ssd, ALU_to_ssd, dataMem_to_ssd                                             
 );
@@ -40,8 +44,8 @@ module FullDatapath(
     wire [31:0] PC_in, PC_out, Instruction, Imm, ALUResult;
     
     /* Control Unit signals */
-    wire Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
-    wire [1:0] ALUOp;
+    wire Branch, MemRead, MemWrite, ALUSrc_1, ALUSrc_2, RegWrite, Jump;
+    wire [1:0] ALUOp, MemtoReg;
     
 
     /* ALU control signal */
@@ -58,7 +62,7 @@ module FullDatapath(
     
     wire [31:0] Shift_out;
     wire [31:0] write_data;
-    wire [31:0] MuxALU_out;
+    wire [31:0] MuxALU_1_out, MuxALU_2_out;
     wire [31:0] DataMemOut;
     wire and_out;
     wire [31:0]adder_out;
@@ -81,8 +85,10 @@ module FullDatapath(
         .MemRead(MemRead),
         .MemtoReg(MemtoReg),
         .MemWrite(MemWrite),
-        .ALUSrc(ALUSrc),
+        .ALUSrc_1(ALUSrc_1),
+        .ALUSrc_2(ALUSrc_2),
         .RegWrite(RegWrite),
+        .Jump(Jump),
         .ALUOp(ALUOp));
         
         
@@ -97,8 +103,9 @@ module FullDatapath(
         .regWrite(RegWrite),
         .clk(clk),
         .rst(reset));
-        
-     mux_2x1 MuxALU(.A(rs_2),.B(Imm),.sel(ALUSrc),.out(MuxALU_out));
+     
+     mux_2x1 MuxALU_1(.A(rs_1),.B(PC_out),.sel(ALUSrc_1),.out(MuxALU_1_out));   
+     mux_2x1 MuxALU_2(.A(rs_2),.B(Imm),.sel(ALUSrc_2),.out(MuxALU_2_out));
      
 //     ALU alu(.A(rs_1), 
 //        .B(MuxALU_out), 
@@ -108,8 +115,8 @@ module FullDatapath(
 
 
 // *********** MISSING PARAMETER IN ALU: shamt COMPLETE WHEN ADDING SHIFT SUPPORT!!!!******************
-      ALU prv32_ALU(.a(rs_1),
-           .b(MuxALU_out), 
+      prv32_ALU ALU(.a(MuxALU_1_out),
+           .b(MuxALU_2_out), 
            .shamt(),  // HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
            .r(ALUResult), 
            .cf(cFlag), 
@@ -134,7 +141,14 @@ module FullDatapath(
         
    DataMem DM(.clk(clk),.MemRead(MemRead),.MemWrite(MemWrite),.addr(ALUResult[7:2]),.data_in(rs_2),.data_out(DataMemOut));     
     
-   mux_2x1 MUX_writeback(.A(ALUResult),.B(DataMemOut),.sel(MemtoReg),.out(write_data));
+//   mux_2x1 MUX_writeback(.A(ALUResult),.B(DataMemOut),.sel(MemtoReg),.out(write_data));
+// *********** MISSING PARAMETER IN MUX_WRITEBACK: C COMPLETE WHEN ADDING U TYPE SUPPORT!!!!******************
+     mux_4x1 MUX_writeback(.A(PC_adder_out), //PC + 4 -- 00
+             .B(DataMemOut), // from data memory -- 01
+             .C(ALUResult), //from ALU -- 10
+             .D(), // MISSING PARAMETER -- ADD THIS WITH LUI/AUIPC
+             .sel(MemtoReg),
+             .out(write_data));
     
    assign and_out = Branch & zeroFlag;
     
@@ -144,12 +158,11 @@ module FullDatapath(
    
    // mux_2x1 PCMux(.A(PC_adder_out),.B(adder_out),.sel(and_out),.out(PC_in));
    
-// *********** MISSING PARAMETER IN PCMUX: C (jump target) and one of the sel bits (jump signal) COMPLETE WHEN ADDING J-TYPE SUPPORT!!!!******************
    mux_4x1 PCMux(.A(PC_adder_out), //PC+4 -- 00
            .B(adder_out), //Branch target -- 01
-           .C(), //Jump target -- 10 HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+           .C(ALUResult), // Jump Target -- 10
            .D(), //unnecessary input, keep empty -- 11
-           .sel({0, BranchControl_out}), // and HEREEEEEEEEEEEEEEEEEEEEEEEEE replace the 0 with the jump control signal
+           .sel({Jump, BranchControl_out}), 
            .out(PC_in));
            
    
@@ -160,18 +173,18 @@ module FullDatapath(
    // =====================================================================
    /* OUTPUTS FOR FPGA IMPLEMENTATION */
    assign Instruction_out = Instruction;
-   assign control_signals_out = {ALUcontrol_out, zeroFlag, and_out, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite};
+   assign control_signals_out = {ALUcontrol_out, zeroFlag, and_out, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc_1, ALUSrc_2, RegWrite};
    
    assign PC_out_to_ssd =PC_out ;
    assign PC_4_out = PC_adder_out;
-   assign PC_adder_ssd =adder_out ;
+   assign PC_adder_ssd = adder_out ;
    assign PC_in_to_ssd = PC_in;
    assign rs1_data =rs_1 ;
    assign rs2_data = rs_2 ;
    assign write_data_to_ssd =write_data ;
    assign Imm_to_ssd = Imm;
    assign shift_out_to_ssd =Shift_out ;
-   assign muxALU_to_ssd =MuxALU_out ;
+   assign muxALU_to_ssd = MuxALU_2_out ;
    assign ALU_to_ssd = ALUResult;
    assign dataMem_to_ssd =DataMemOut ;
    // =====================================================================

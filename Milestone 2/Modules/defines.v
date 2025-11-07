@@ -50,3 +50,10 @@
 
 `define     SYS_EC_EB       3'b000
 
+`define ALUOP_ADD 2'b00
+`define ALUOP_SUB 2'b01
+`define ALUOP_RTYPE 2'b10
+
+`define MEMTOREG_PC4 2'b00
+`define MEMTOREG_DM 2'b01
+`define MEMTOREG_ALU 2'b10
