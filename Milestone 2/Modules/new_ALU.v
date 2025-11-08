@@ -16,8 +16,9 @@ module prv32_ALU(
     assign {cf, add} = alufn[0] ? (a + op_b + 1'b1) : (a + b);
     
     assign zf = (add == 0);
-    assign sf = add[31];
-    assign vf = (a[31] ^ (op_b[31]) ^ add[31] ^ cf);
+
+    assign sf = r[31];
+    assign vf = (a[31] ^ (op_b[31]) ^ r[31] ^ cf);
     
     wire[31:0] sh;
     shifter shifter0(.a(a), .shamt(shamt), .type(alufn[1:0]),  .r(sh));
@@ -43,4 +44,7 @@ module prv32_ALU(
             4'b11_11:  r = {31'b0,(~cf)};            	
         endcase
     end
+    
+    assign zf = (r == 0);
+    
 endmodule

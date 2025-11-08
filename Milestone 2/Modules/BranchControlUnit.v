@@ -31,6 +31,9 @@ module BranchControlUnit(
                 `BR_BGE: Branch_output = (S == V);       
                 `BR_BLTU: Branch_output = ~C;       
                 `BR_BGEU: Branch_output = C;
+                default: Branch_output = 0;
             endcase
+        else
+            Branch_output = 0;
    end
 endmodule

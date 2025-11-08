@@ -92,7 +92,8 @@ module FullDatapath(
         .ALUOp(ALUOp));
         
         
-    ImmGen IG(.gen_out(Imm), .inst(Instruction));
+//    ImmGen IG(.gen_out(Imm), .inst(Instruction));
+    rv32_ImmGen IG(.IR(Instruction), .Imm(Imm));
     
     RegisterFile RF(.read_reg1(Instruction[19:15]), 
         .read_reg2(Instruction[24:20]), 

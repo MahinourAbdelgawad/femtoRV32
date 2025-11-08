@@ -57,3 +57,7 @@
 `define MEMTOREG_PC4 2'b00
 `define MEMTOREG_DM 2'b01
 `define MEMTOREG_ALU 2'b10
+
+`define SHIFT_SLL 2'b00
+`define SHIFT_SRL 2'b01
+`define SHIFT_SRA 2'b10
