@@ -5,7 +5,7 @@ module ALU #(parameter n = 32) (
     input [n-1:0] B,
     input [3:0] sel,
     output reg [n-1:0] result,
-    output reg flag
+    output reg zFlag, sFlag, cFlag, vFlag
     );
     
     wire [n-1:0] rca_sum;
@@ -23,10 +23,17 @@ module ALU #(parameter n = 32) (
             4'b0001: result = A | B; // OR
             4'b0010: result = rca_sum ;// +
             4'b0110: result = rca_sum ; // -
+            default: result = {n{1'b0}};
         endcase 
         
-  flag = (result == 0) ? 1 : 0;
         
-       
-    end
+        zFlag = (result == 0) ? 1 : 0;
+        sFlag = result[n-1];
+        cFlag = rca_Cout;
+        
+        vFlag = (sel[2] == 0) ? 
+                        ((A[n-1] & B[n-1] & ~result[n-1]) | (~A[n-1] & ~B[n-1] & result[n-1])) : 
+                        ((A[n-1] & ~B[n-1] & ~result[n-1]) | (~A[n-1] & B[n-1] & result[n-1]));
+     end
+
 endmodule

@@ -92,8 +92,8 @@ module FullDatapath(
         .ALUOp(ALUOp));
         
         
-//    ImmGen IG(.gen_out(Imm), .inst(Instruction));
-    rv32_ImmGen IG(.IR(Instruction), .Imm(Imm));
+    ImmGen IG(.gen_out(Imm), .inst(Instruction));
+//    rv32_ImmGen IG(.IR(Instruction), .Imm(Imm));
     
     RegisterFile RF(.read_reg1(Instruction[19:15]), 
         .read_reg2(Instruction[24:20]), 
@@ -108,23 +108,26 @@ module FullDatapath(
      mux_2x1 MuxALU_1(.A(rs_1),.B(PC_out),.sel(ALUSrc_1),.out(MuxALU_1_out));   
      mux_2x1 MuxALU_2(.A(rs_2),.B(Imm),.sel(ALUSrc_2),.out(MuxALU_2_out));
      
-//     ALU alu(.A(rs_1), 
-//        .B(MuxALU_out), 
-//        .sel(ALUcontrol_out), 
-//        .result(ALUResult), 
-//        .flag(zeroFlag));
+     ALU alu(.A(MuxALU_1_out), 
+        .B(MuxALU_2_out), 
+        .sel(ALUcontrol_out), 
+        .result(ALUResult), 
+        .zFlag(zeroFlag),
+        .sFlag(sFlag), 
+        .cFlag(cFlag), 
+        .vFlag(vFlag));
 
 
 // *********** MISSING PARAMETER IN ALU: shamt COMPLETE WHEN ADDING SHIFT SUPPORT!!!!******************
-      prv32_ALU ALU(.a(MuxALU_1_out),
-           .b(MuxALU_2_out), 
-           .shamt(),  // HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-           .r(ALUResult), 
-           .cf(cFlag), 
-           .zf(zeroFlag), 
-           .vf(vFlag), 
-           .sf(sFlag), 
-           .alufn(ALUcontrol_out));
+//      prv32_ALU ALU(.a(MuxALU_1_out),
+//           .b(MuxALU_2_out), 
+//           .shamt(),  // HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+//           .r(ALUResult), 
+//           .cf(cFlag), 
+//           .zf(zeroFlag), 
+//           .vf(vFlag), 
+//           .sf(sFlag), 
+//           .alufn(ALUcontrol_out));
      
     
     BranchControlUnit BranchControlUnit(.func3(func3),
