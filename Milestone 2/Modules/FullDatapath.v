@@ -20,7 +20,7 @@
 *                                   --> added jump signal and another ALUSrc to control unit
 *                                   --> added a second 2x1 mux for alu source
 *                                   --> replaced 2x1 writeback mux with a 4x1
-* Unresolved: Missing parameter in ALU
+*                 9/11/2025: Added LUI and AUIPC support (added missing parameter in wb mux)
 **********************************************************************/
 
 module FullDatapath(
@@ -92,8 +92,8 @@ module FullDatapath(
         .ALUOp(ALUOp));
         
         
-    ImmGen IG(.gen_out(Imm), .inst(Instruction));
-//    rv32_ImmGen IG(.IR(Instruction), .Imm(Imm));
+//    ImmGen IG(.gen_out(Imm), .inst(Instruction));
+    rv32_ImmGen IG(.IR(Instruction), .Imm(Imm));
     
     RegisterFile RF(.read_reg1(Instruction[19:15]), 
         .read_reg2(Instruction[24:20]), 
@@ -150,7 +150,7 @@ module FullDatapath(
      mux_4x1 MUX_writeback(.A(PC_adder_out), //PC + 4 -- 00
              .B(DataMemOut), // from data memory -- 01
              .C(ALUResult), //from ALU -- 10
-             .D(), // MISSING PARAMETER -- ADD THIS WITH LUI/AUIPC
+             .D(Imm), // immediate (lui) - 11
              .sel(MemtoReg),
              .out(write_data));
     

@@ -53,10 +53,12 @@
 `define ALUOP_ADD 2'b00
 `define ALUOP_SUB 2'b01
 `define ALUOP_RTYPE 2'b10
+`define ALUOP_ITYPE 2'b10
 
 `define MEMTOREG_PC4 2'b00
 `define MEMTOREG_DM 2'b01
 `define MEMTOREG_ALU 2'b10
+`define MEMTOREG_IMM 2'b11
 
 `define SHIFT_SLL 2'b00
 `define SHIFT_SRL 2'b01
