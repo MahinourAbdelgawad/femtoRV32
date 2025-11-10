@@ -48,8 +48,9 @@ module FullDatapath(
     wire [1:0] ALUOp, MemtoReg;
     
 
-    /* ALU control signal */
+    /* ALU control signals */
     wire [3:0] ALUcontrol_out;
+    wire ALUControl_type_IR;
     
     
     /* Branch Control unit signal */
@@ -111,6 +112,8 @@ module FullDatapath(
      ALU alu(.A(MuxALU_1_out), 
         .B(MuxALU_2_out), 
         .sel(ALUcontrol_out), 
+        .shamt(Instruction[`IR_shamt]),
+        .type_IR(ALUControl_type_IR),
         .result(ALUResult), 
         .zFlag(zeroFlag),
         .sFlag(sFlag), 
@@ -141,7 +144,8 @@ module FullDatapath(
     ALUControlUnit ALUControl(.ALUOp(ALUOp), 
         .inst14_12(Instruction[14:12]), 
         .inst_30(Instruction[30]), 
-        .ALU_sel(ALUcontrol_out));
+        .ALU_sel(ALUcontrol_out),
+        .type_IR(ALUControl_type_IR));
         
    DataMem DM(.clk(clk),.MemRead(MemRead),.MemWrite(MemWrite),.addr(ALUResult[7:2]),.data_in(rs_2),.data_out(DataMemOut));     
     

@@ -63,3 +63,6 @@
 `define SHIFT_SLL 2'b00
 `define SHIFT_SRL 2'b01
 `define SHIFT_SRA 2'b10
+    
+`define RTYPE 1'b1
+`define ITYPE 1'b0

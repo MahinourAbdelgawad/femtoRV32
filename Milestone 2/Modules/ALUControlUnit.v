@@ -18,7 +18,8 @@ module ALUControlUnit(
     input [1:0] ALUOp,
     input [2:0] func3,
     input inst_30, inst_5,
-    output reg [3:0] ALU_sel 
+    output reg [3:0] ALU_sel,
+    output reg type_IR 
     );
     
     always @ (*) begin
@@ -28,6 +29,8 @@ module ALUControlUnit(
     
             2'b10: begin
                 if (inst_5 == 0) begin // I TYPE (inst_5 is used to determine I or R type
+                    type_IR = `ITYPE;
+                    
                     case (func3)
                         `F3_ADD: ALU_sel = `ALU_ADD; //addi
                         `F3_SLL: ALU_sel = `ALU_SLL; //slli
@@ -43,6 +46,8 @@ module ALUControlUnit(
                 end
                 
                 else begin // R TYPE
+                    type_IR = `RTYPE;
+                    
                     case(func3)
                         `F3_ADD: ALU_sel = (inst_30 == 0) ? `ALU_ADD : `ALU_SUB;
                         `F3_SLL: ALU_sel = `ALU_SLL;
