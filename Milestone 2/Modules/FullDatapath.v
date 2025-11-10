@@ -45,7 +45,7 @@ module FullDatapath(
     wire [31:0] PC_in, PC_out, Instruction, Imm, ALUResult;
     
     /* Control Unit signals */
-    reg Branch, MemRead, MemWrite, ALUSrc_1, ALUSrc_2, RegWrite, Jump, Halt;
+    wire Branch, MemRead, MemWrite, ALUSrc_1, ALUSrc_2, RegWrite, Jump, Halt;
     wire [1:0] ALUOp, MemtoReg;
     
 
@@ -55,7 +55,7 @@ module FullDatapath(
     
     
     /* Branch Control unit signal */
-    reg BranchControl_out;
+    wire BranchControl_out;
     
     
     /* ALU Flags */
@@ -74,11 +74,10 @@ module FullDatapath(
 
     assign func3 = Instruction[`IR_funct3];
     assign func7 = Instruction[`IR_funct7];
-    
-    always @ (*) begin
-        if (Halt) // if Halt = 1, assign the select lines of the PCMux to 11 to output PC and stop it from changing
-           {Jump, BranchControl_out} = 2'b11; 
-    end
+
+//        if (Halt) // if Halt = 1, assign the select lines of the PCMux to 11 to output PC and stop it from changing
+//           assign {Jump, BranchControl_out} = 2'b11; 
+
     // =====================================================================
     /* MODULE INSTANCES */
     PC pc(.D(PC_in), .clk(clk), .load(1'b1), .rst(reset), .Q(PC_out));
@@ -134,7 +133,7 @@ module FullDatapath(
                       .Branch_output(BranchControl_out));
      
     ALUControlUnit ALUControl(.ALUOp(ALUOp), 
-        .inst14_12(Instruction[14:12]), 
+        .func3(Instruction[14:12]), 
         .inst_30(Instruction[30]), 
         .ALU_sel(ALUcontrol_out),
         .type_IR(ALUControl_type_IR));
@@ -161,7 +160,7 @@ module FullDatapath(
            .B(adder_out), //Branch target -- 01
            .C(ALUResult), // Jump Target -- 10
            .D(PC_out), // for halt instructions (pc stops changing...select lines are handled somewhere above
-           .sel({Jump, BranchControl_out}), 
+           .sel((Halt) ? 2'b11 : {Jump, BranchControl_out}), 
            .out(PC_in));
            
    
