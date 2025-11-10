@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+`include "defines.v" 
 
 module ImmGen(
     output reg [31:0] gen_out,
@@ -7,24 +8,40 @@ module ImmGen(
     
     wire [6:0] opcode;
     
-    assign opcode = inst[6:0];
+    assign opcode = inst[`IR_opcode];
     
     always @ (*) begin
         case (opcode)
             
-            7'b0000011: begin
+            `OPCODE_Load: begin
                 gen_out = {{20{inst[31]}}, inst[31:20]};
             end
 
-            // S-type 
-            7'b0100011: begin
+            `OPCODE_Store: begin
                 gen_out = {{20{inst[31]}}, inst[31:25], inst[11:7]};
             end
 
             // SB-type 
-            7'b1100011: begin
+            `OPCODE_Branch: begin
                 gen_out = {{19{inst[31]}}, inst[31], inst[7], inst[30:25], inst[11:8]};
             end
+            
+            `OPCODE_Arith_I: begin
+                gen_out = {{20{inst[31]}}, inst[31:20]};
+            end
+            
+            `OPCODE_JALR: begin
+                gen_out = {{20{inst[31]}}, inst[31:20]};
+            end
+            
+            `OPCODE_JAL: begin
+                gen_out = {{11{inst[31]}}, inst[31], inst[19:12], inst[20], inst[30:21], 1'b0};
+            end
+            
+             `OPCODE_LUI, `OPCODE_AUIPC: begin
+                gen_out = {inst[31:12], 12'b0};
+            end
+            
 
             default: begin
                 gen_out = 32'b0; 

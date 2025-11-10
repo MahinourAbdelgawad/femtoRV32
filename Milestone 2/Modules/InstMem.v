@@ -4,59 +4,59 @@ module InstMem (input [5:0] addr, output [31:0] data_out);
 reg [31:0] mem [0:63];
 
 
-initial begin : init_rom
-  integer i;
-  for (i = 0; i < 64; i = i + 1) mem[i] = 32'h00000013; // NOP (ADDI x0,x0,0)
-
-  // Load values from Data Memory
-  mem[0]  = 32'b000000000000_00000_010_00001_0000011; // lw x1, 0(x0)  -> 5
-  mem[1]  = 32'b000000000100_00000_010_00010_0000011; // lw x2, 4(x0)  -> 5
-  mem[2]  = 32'b000000001000_00000_010_00011_0000011; // lw x3, 8(x0)  -> 3
-  mem[3]  = 32'b000000001100_00000_010_00100_0000011; // lw x4, 12(x0) -> 9
-
-  // --- BEQ Test ---
-  mem[4]  = 32'b0000000_00010_00001_000_01000_1100011; // beq x1, x2, +8  (should take)
-  mem[5]  = 32'b0000000_00011_00001_000_00000_0110011; // add x0, x1, x3  (skipped)
-  mem[6]  = 32'b0000000_00010_00001_000_00101_0110011; // add x5, x1, x2  (target)
-
-  // --- BNE Test ---
-  mem[7]  = 32'b0000000_00011_00001_001_01000_1100011; // bne x1, x3, +8  (should take)
-  mem[8]  = 32'b0000000_00001_00001_000_00110_0110011; // add x6, x1, x1  (skipped)
-  mem[9]  = 32'b0000000_00101_00001_000_00111_0110011; // add x7, x1, x5  (target)
-
-  // --- BLT Test ---
-  mem[10] = 32'b0000000_00001_00011_100_01000_1100011; // blt x3, x1, +8  (true, 3<5)
-  mem[11] = 32'b0000000_00011_00001_000_01000_0110011; // add x8, x1, x3  (skipped)
-  mem[12] = 32'b0000000_00011_00001_000_01001_0110011; // add x9, x1, x3  (target)
-
-  // --- BGE Test ---
-  mem[13] = 32'b0000000_00011_00001_101_01000_1100011; // bge x3, x1, +8  (false, 3>=5 false)
-  mem[14] = 32'b0000000_00011_00001_000_01010_0110011; // add x10, x1, x3 (executed)
-  mem[15] = 32'b0000000_00011_00001_000_01011_0110011; // add x11, x1, x3 (skipped if branch taken)
-
-  // --- BLTU Test (unsigned less than) ---
-  mem[16] = 32'b0000000_00001_00011_110_01000_1100011; // bltu x3, x1, +8 (true, 3<5 unsigned)
-  mem[17] = 32'b0000000_00011_00001_000_01100_0110011; // add x12, x1, x3 (skipped)
-  mem[18] = 32'b0000000_00011_00001_000_01101_0110011; // add x13, x1, x3 (target)
-
-  // --- BGEU Test (unsigned greater or equal) ---
-  mem[19] = 32'b0000000_00001_00011_111_01000_1100011; // bgeu x3, x1, +8 (false)
-  mem[20] = 32'b0000000_00011_00001_000_01110_0110011; // add x14, x1, x3 (executed)
-  mem[21] = 32'b0000000_00011_00001_000_01111_0110011; // add x15, x1, x3 (skipped if taken)
-end
-
-
 //initial begin : init_rom
-//integer i;
-//for (i = 0; i < 64; i = i + 1) mem[i] = 32'h00000013; // (ADDI x0,x0,0)
-//mem[0] = 32'h00000093; // ADDI x1,x0,0
-//mem[1] = 32'h00108113; // ADDI x2,x1,1
-//mem[2] = 32'h00210193; // ADDI x3,x2,2
-//mem[3] = 32'h00318213; // ADDI x4,x3,3
-//mem[10]= 32'h00b50633; // ADD x12,x10,x11 
+//  integer i;
+//  for (i = 0; i < 64; i = i + 1) mem[i] = 32'h00000013; // NOP (ADDI x0,x0,0)
+
+//  // Load values from Data Memory
+//  mem[0]  = 32'b000000000000_00000_010_00001_0000011; // lw x1, 0(x0)  -> 5
+//  mem[1]  = 32'b000000000100_00000_010_00010_0000011; // lw x2, 4(x0)  -> 5
+//  mem[2]  = 32'b000000001000_00000_010_00011_0000011; // lw x3, 8(x0)  -> 3
+//  mem[3]  = 32'b000000001100_00000_010_00100_0000011; // lw x4, 12(x0) -> 9
+
+//  // --- BEQ Test ---
+//  mem[4]  = 32'b0000000_00010_00001_000_01000_1100011; // beq x1, x2, +8  (should take)
+//  mem[5]  = 32'b0000000_00011_00001_000_00000_0110011; // add x0, x1, x3  (skipped)
+//  mem[6]  = 32'b0000000_00010_00001_000_00101_0110011; // add x5, x1, x2  (target)
+
+//  // --- BNE Test ---
+//  mem[7]  = 32'b0000000_00011_00001_001_01000_1100011; // bne x1, x3, +8  (should take)
+//  mem[8]  = 32'b0000000_00001_00001_000_00110_0110011; // add x6, x1, x1  (skipped)
+//  mem[9]  = 32'b0000000_00101_00001_000_00111_0110011; // add x7, x1, x5  (target)
+
+//  // --- BLT Test ---
+//  mem[10] = 32'b0000000_00001_00011_100_01000_1100011; // blt x3, x1, +8  (true, 3<5)
+//  mem[11] = 32'b0000000_00011_00001_000_01000_0110011; // add x8, x1, x3  (skipped)
+//  mem[12] = 32'b0000000_00011_00001_000_01001_0110011; // add x9, x1, x3  (target)
+
+//  // --- BGE Test ---
+//  mem[13] = 32'b0000000_00011_00001_101_01000_1100011; // bge x3, x1, +8  (false, 3>=5 false)
+//  mem[14] = 32'b0000000_00011_00001_000_01010_0110011; // add x10, x1, x3 (executed)
+//  mem[15] = 32'b0000000_00011_00001_000_01011_0110011; // add x11, x1, x3 (skipped if branch taken)
+
+//  // --- BLTU Test (unsigned less than) ---
+//  mem[16] = 32'b0000000_00001_00011_110_01000_1100011; // bltu x3, x1, +8 (true, 3<5 unsigned)
+//  mem[17] = 32'b0000000_00011_00001_000_01100_0110011; // add x12, x1, x3 (skipped)
+//  mem[18] = 32'b0000000_00011_00001_000_01101_0110011; // add x13, x1, x3 (target)
+
+//  // --- BGEU Test (unsigned greater or equal) ---
+//  mem[19] = 32'b0000000_00001_00011_111_01000_1100011; // bgeu x3, x1, +8 (false)
+//  mem[20] = 32'b0000000_00011_00001_000_01110_0110011; // add x14, x1, x3 (executed)
+//  mem[21] = 32'b0000000_00011_00001_000_01111_0110011; // add x15, x1, x3 (skipped if taken)
 //end
 
-//    initial begin
+
+initial begin : init_rom
+integer i;
+for (i = 0; i < 64; i = i + 1) mem[i] = 32'h00000013; // (ADDI x0,x0,0)
+mem[0] = 32'h00000093; // ADDI x1,x0,0
+mem[1] = 32'h00108113; // ADDI x2,x1,1
+mem[2] = 32'h00210193; // ADDI x3,x2,2
+mem[3] = 32'h00318213; // ADDI x4,x3,3
+mem[10]= 32'h00b50633; // ADD x12,x10,x11 
+end
+
+    initial begin
     
 //          mem[0]=32'b111111111011_00000_000_00001_0010011; 
 //    //Exp 1
@@ -109,6 +109,26 @@ end
 //    mem[6]  = 32'h00A00293; // ADDI x5, x0, 10 (check sequential execution after jump)
 //    mem[7]  = 32'h00000013; // NOP
 
+    mem[0]  = 32'h00000013; // NOP
+    mem[1]  = 32'h008000EF; // JAL x1, +8    -> jumps to mem[3+8/4=5], stores return addr = 4
+    mem[2]  = 32'h00000013; // NOP (skipped)
+    mem[3]  = 32'h00400113; // ADDI x2, x0, 4
+    mem[4]  = 32'h00008297; // AUIPC x5, 0  (just for filler, doesn't jump)
+    mem[5]  = 32'h00008167; // JALR x3, x1, 0 -> jump to x1 = return addr from first JAL = 4
+    mem[6]  = 32'h00A00293; // ADDI x5, x0, 10 (skipped if JALR works)
+    mem[7]  = 32'h00000013; // NOP
+    mem[8]  = 32'h010000EF; // JAL x1, +16  -> jump forward 16 bytes = 4 instructions ahead
+    mem[9]  = 32'h00000013; // NOP (skipped)
+    mem[10] = 32'h00000013; // NOP (skipped)
+    mem[11] = 32'h00000013; // NOP (skipped)
+    mem[12] = 32'h00400193; // ADDI x3, x0, 4 (executed after jump)
+    mem[13] = 32'h00010113; // ADDI x2, x2, 1
+    mem[14] = 32'h00008067; // JALR x0, x1, 0 -> jump back to x1 (from last JAL, saves sequential PC=16)
+    mem[15] = 32'h00000013; // NOP
+    mem[16] = 32'h00800293; // ADDI x5, x0, 8
+    mem[17] = 32'h00000013; // NOP
+    mem[18] = 32'h00000013; // NOP
+
 //    mem[0] = 32'h00500093; // ADDI x1, x0, 5
 //    mem[1] = 32'h00500113; // ADDI x2, x0, 5
 //    mem[2] = 32'h00808263; // BEQ x1, x2, +8  → jump from PC=8 to PC=16
@@ -117,7 +137,7 @@ end
 //    mem[5] = 32'h00200213; // ADDI x4, x0, 2
 ////    Expected PC outputs: 0 → 4 → 8 → 16 → 20 → 24
  
-//    end 
+    end 
     
     
 assign data_out = mem[addr];
