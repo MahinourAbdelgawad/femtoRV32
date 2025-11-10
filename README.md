@@ -22,7 +22,7 @@
 **Deadline:** Monday November 10
 
 **Checklist:**  
-- [ ] Single cycle datapath block diagram
+- [x] Single cycle datapath block diagram
 - [ ] Verilog descriptions supporting all of the RV32I instructions 
 - [ ] Basic test cases covering all supported instructions
 - [ ] A readme.txt file that contains student names as well as release notes (issues, assumptions, what works, what does not work, etc.)
