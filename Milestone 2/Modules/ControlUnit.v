@@ -18,7 +18,7 @@
 
 module ControlUnit (
     input [4:0] inst,
-    output reg Branch, MemRead, MemWrite, ALUSrc_1, ALUSrc_2, RegWrite, Jump,
+    output reg Branch, MemRead, MemWrite, ALUSrc_1, ALUSrc_2, RegWrite, Jump, Halt,
     output reg [1:0] ALUOp, MemtoReg
     );
     
@@ -34,7 +34,8 @@ module ControlUnit (
                 ALUSrc_1 = 0;
                 ALUSrc_2 = 0;
                 RegWrite = 1; 
-                Jump = 0;   
+                Jump = 0; 
+                Halt = 0;  
             end
             
             // I-type Arithmetic: (ADDI, ANDI, ORI, etc.)
@@ -48,6 +49,7 @@ module ControlUnit (
                 ALUSrc_2 = 1; // Immediate input
                 RegWrite = 1;
                 Jump = 0;
+                Halt = 0;  
             end
 
             `OPCODE_Load: begin // LW
@@ -60,6 +62,7 @@ module ControlUnit (
                 ALUSrc_2 = 1;
                 RegWrite = 1;
                 Jump = 0;
+                Halt = 0;  
             end
             
             `OPCODE_Store: begin // SW
@@ -72,6 +75,7 @@ module ControlUnit (
                 ALUSrc_2 = 1;
                 RegWrite = 0;
                 Jump = 0;
+                Halt = 0;  
             end
             
             `OPCODE_Branch: begin // B-Type
@@ -84,6 +88,7 @@ module ControlUnit (
                 ALUSrc_2 = 0;
                 RegWrite = 0;
                 Jump = 0;
+                Halt = 0;  
             end
             
             `OPCODE_JALR: begin // JALR
@@ -96,6 +101,7 @@ module ControlUnit (
                 ALUSrc_2 = 1;
                 RegWrite = 1;
                 Jump = 1;
+                Halt = 0;  
             end
             
             `OPCODE_JAL: begin // JAL
@@ -108,6 +114,7 @@ module ControlUnit (
                 ALUSrc_2 = 1;
                 RegWrite = 1;
                 Jump = 1;
+                Halt = 0;  
             end
             
             
@@ -121,6 +128,7 @@ module ControlUnit (
                 ALUSrc_2 = 1;
                 RegWrite = 1;
                 Jump = 0;
+                Halt = 0;  
             end
             
             `OPCODE_AUIPC: begin
@@ -133,6 +141,7 @@ module ControlUnit (
                 ALUSrc_2 = 1;
                 RegWrite = 1;
                 Jump = 0;
+                Halt = 0;  
             
             end
             // ECALL / EBREAK / FENCE / FENCE.TSO / PAUSE as well as any wrong inputs (halt)
@@ -146,6 +155,7 @@ module ControlUnit (
                 ALUSrc_2 = 0;
                 RegWrite = 0;
                 Jump = 0;
+                Halt = 1;  
             end
             
         endcase

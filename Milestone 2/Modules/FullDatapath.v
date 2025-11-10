@@ -20,7 +20,8 @@
 *                                   --> added jump signal and another ALUSrc to control unit
 *                                   --> added a second 2x1 mux for alu source
 *                                   --> replaced 2x1 writeback mux with a 4x1
-*                 9/11/2025: Added LUI and AUIPC support (added missing parameter in wb mux)
+*                 9/11/2025: (1) Added LUI and AUIPC support (added missing parameter in wb mux)
+*                            (2) Added Halt support for the last 5 instructions (Added PC_out to the PCmux and added Halt signal to the control unit
 **********************************************************************/
 
 module FullDatapath(
@@ -44,7 +45,7 @@ module FullDatapath(
     wire [31:0] PC_in, PC_out, Instruction, Imm, ALUResult;
     
     /* Control Unit signals */
-    wire Branch, MemRead, MemWrite, ALUSrc_1, ALUSrc_2, RegWrite, Jump;
+    reg Branch, MemRead, MemWrite, ALUSrc_1, ALUSrc_2, RegWrite, Jump, Halt;
     wire [1:0] ALUOp, MemtoReg;
     
 
@@ -54,7 +55,7 @@ module FullDatapath(
     
     
     /* Branch Control unit signal */
-    wire BranchControl_out;
+    reg BranchControl_out;
     
     
     /* ALU Flags */
@@ -74,7 +75,10 @@ module FullDatapath(
     assign func3 = Instruction[`IR_funct3];
     assign func7 = Instruction[`IR_funct7];
     
-
+    always @ (*) begin
+        if (Halt) // if Halt = 1, assign the select lines of the PCMux to 11 to output PC and stop it from changing
+           {Jump, BranchControl_out} = 2'b11; 
+    end
     // =====================================================================
     /* MODULE INSTANCES */
     PC pc(.D(PC_in), .clk(clk), .load(1'b1), .rst(reset), .Q(PC_out));
@@ -90,6 +94,7 @@ module FullDatapath(
         .ALUSrc_2(ALUSrc_2),
         .RegWrite(RegWrite),
         .Jump(Jump),
+        .Halt(Halt),
         .ALUOp(ALUOp));
         
         
@@ -120,19 +125,6 @@ module FullDatapath(
         .cFlag(cFlag), 
         .vFlag(vFlag));
 
-
-// *********** MISSING PARAMETER IN ALU: shamt COMPLETE WHEN ADDING SHIFT SUPPORT!!!!******************
-//      prv32_ALU ALU(.a(MuxALU_1_out),
-//           .b(MuxALU_2_out), 
-//           .shamt(),  // HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-//           .r(ALUResult), 
-//           .cf(cFlag), 
-//           .zf(zeroFlag), 
-//           .vf(vFlag), 
-//           .sf(sFlag), 
-//           .alufn(ALUcontrol_out));
-     
-    
     BranchControlUnit BranchControlUnit(.func3(func3),
                       .Z(zeroFlag),
                       .C(cFlag),
@@ -150,7 +142,6 @@ module FullDatapath(
    DataMem DM(.clk(clk),.MemRead(MemRead),.MemWrite(MemWrite),.addr(ALUResult[7:2]),.data_in(rs_2),.data_out(DataMemOut));     
     
 //   mux_2x1 MUX_writeback(.A(ALUResult),.B(DataMemOut),.sel(MemtoReg),.out(write_data));
-// *********** MISSING PARAMETER IN MUX_WRITEBACK: C COMPLETE WHEN ADDING U TYPE SUPPORT!!!!******************
      mux_4x1 MUX_writeback(.A(PC_adder_out), //PC + 4 -- 00
              .B(DataMemOut), // from data memory -- 01
              .C(ALUResult), //from ALU -- 10
@@ -165,11 +156,11 @@ module FullDatapath(
    RCA #(32) adder(.A(PC_out),.B(Shift_out),.sum(adder_out),.Cout());
    
    // mux_2x1 PCMux(.A(PC_adder_out),.B(adder_out),.sel(and_out),.out(PC_in));
-   
+
    mux_4x1 PCMux(.A(PC_adder_out), //PC+4 -- 00
            .B(adder_out), //Branch target -- 01
            .C(ALUResult), // Jump Target -- 10
-           .D(), //unnecessary input, keep empty -- 11
+           .D(PC_out), // for halt instructions (pc stops changing...select lines are handled somewhere above
            .sel({Jump, BranchControl_out}), 
            .out(PC_in));
            
@@ -180,6 +171,7 @@ module FullDatapath(
     
    // =====================================================================
    /* OUTPUTS FOR FPGA IMPLEMENTATION */
+   // NOT UPDATED !!!!! check these before running on fpga
    assign Instruction_out = Instruction;
    assign control_signals_out = {ALUcontrol_out, zeroFlag, and_out, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc_1, ALUSrc_2, RegWrite};
    
