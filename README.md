@@ -30,19 +30,18 @@ No thorough testing is required at this stage.
 Testing on FPGA is optional at this stage.
 
 **MS2 Progress List:**
-- [ ] Add I-Type support
+- [x] Add I-Type support
 - [ ] Test I-Type instructions
 - [x] Add B-Type support
 - [ ] Test B-Type instructions
 - [x] Add J-Type support
 - [ ] Test J-Type instructions
-- [ ] Add S-Type support
+- [x] Add S-Type support
 - [ ] Test S-Type instructions
-- [ ] Add U-Type support
+- [x] Add U-Type support
 - [ ] Test U-Type instructions
-- [ ] Handle ECALL, EBREAK, PAUSE, FENCE, and FENCE.TSO 
+- [x] Handle ECALL, EBREAK, PAUSE, FENCE, and FENCE.TSO 
 - [ ] Test ECALL, EBREAK, PAUSE, FENCE, and FENCE.TSO 
-- [ ] Implement shifter0.v
 
 ---
 
