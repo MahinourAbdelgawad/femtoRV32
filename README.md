@@ -38,7 +38,7 @@ Testing on FPGA is optional at this stage.
 - [x] Add B-Type support
 - [x] Test B-Type instructions
 - [x] Add J-Type support
-- [ ] Test J-Type instructions
+- [x] Test J-Type instructions
 - [x] Add S-Type support
 - [ ] Test S-Type instructions
 - [x] Add U-Type support
