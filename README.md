@@ -23,11 +23,11 @@
 
 **Checklist:**  
 - [x] Single cycle datapath block diagram
-- [ ] Verilog descriptions supporting all of the RV32I instructions 
+- [x] Verilog descriptions supporting all of the RV32I instructions 
 - [ ] Basic test cases covering all supported instructions
-- [ ] A readme.txt file that contains student names as well as release notes (issues, assumptions, what works, what does not work, etc.)
-- [ ] A journal folder that contain the journal file of each team member
-- [ ] A PDF report documenting your design (including a schematic of the proposed datapath), your implementation, any issues encountered, solutions, screenshots of test waveforms, etc
+- [x] A readme.txt file that contains student names as well as release notes (issues, assumptions, what works, what does not work, etc.)
+- [x] A journal folder that contain the journal file of each team member
+- [x] A PDF report documenting your design (including a schematic of the proposed datapath), your implementation, any issues encountered, solutions, screenshots of test waveforms, etc
 
 No thorough testing is required at this stage.
 Testing on FPGA is optional at this stage.
