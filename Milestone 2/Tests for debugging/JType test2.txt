@@ -1,0 +1,21 @@
+JType test2
+
+    mem[0]  = 32'h00000013; // NOP
+    mem[1]  = 32'h008000EF; // JAL x1, +8    -> jumps to mem[3+8/4=5], stores return addr = 4
+    mem[2]  = 32'h00000013; // NOP (skipped)
+    mem[3]  = 32'h00400113; // ADDI x2, x0, 4
+    mem[4]  = 32'h00008297; // AUIPC x5, 0  (just for filler, doesn't jump)
+    mem[5]  = 32'h00008167; // JALR x3, x1, 0 -> jump to x1 = return addr from first JAL = 4
+    mem[6]  = 32'h00A00293; // ADDI x5, x0, 10 (skipped if JALR works)
+    mem[7]  = 32'h00000013; // NOP
+    mem[8]  = 32'h010000EF; // JAL x1, +16  -> jump forward 16 bytes = 4 instructions ahead
+    mem[9]  = 32'h00000013; // NOP (skipped)
+    mem[10] = 32'h00000013; // NOP (skipped)
+    mem[11] = 32'h00000013; // NOP (skipped)
+    mem[12] = 32'h00400193; // ADDI x3, x0, 4 (executed after jump)
+    mem[13] = 32'h00010113; // ADDI x2, x2, 1
+    mem[14] = 32'h00008067; // JALR x0, x1, 0 -> jump back to x1 (from last JAL, saves sequential PC=16)
+    mem[15] = 32'h00000013; // NOP
+    mem[16] = 32'h00800293; // ADDI x5, x0, 8
+    mem[17] = 32'h00000013; // NOP
+    mem[18] = 32'h00000013; // NOP

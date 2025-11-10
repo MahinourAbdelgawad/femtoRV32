@@ -1,0 +1,10 @@
+JType test1
+
+    mem[0]  = 32'h00000013; // NOP (ADDI x0, x0, 0)
+    mem[1]  = 32'h004000EF; // JAL  x1, +4  --> jump to mem[3], x1 = PC+4 = 8
+    mem[2]  = 32'h00000013; // NOP (should be skipped)
+    mem[3]  = 32'h00800113; // ADDI x2, x0, 8
+    mem[4]  = 32'h00008167; // JALR x3, x1, 0  --> jump to x1 (return address from first JAL)
+    mem[5]  = 32'h00000013; // NOP (should be skipped if JALR works)
+    mem[6]  = 32'h00A00293; // ADDI x5, x0, 10 (check sequential execution after jump)
+    mem[7]  = 32'h00000013; // NOP
