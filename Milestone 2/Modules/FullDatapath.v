@@ -138,7 +138,7 @@ module FullDatapath(
         .ALU_sel(ALUcontrol_out),
         .type_IR(ALUControl_type_IR));
         
-   DataMem DM(.clk(clk),.MemRead(MemRead),.MemWrite(MemWrite),.addr(ALUResult[7:2]),.data_in(rs_2),.data_out(DataMemOut));     
+   DataMem DM(.clk(clk),.MemRead(MemRead),.MemWrite(MemWrite), .func3(Instruction[`IR_funct3]), .addr(ALUResult[7:0]),.data_in(rs_2),.data_out(DataMemOut));     
     
 //   mux_2x1 MUX_writeback(.A(ALUResult),.B(DataMemOut),.sel(MemtoReg),.out(write_data));
      mux_4x1 MUX_writeback(.A(PC_adder_out), //PC + 4 -- 00
