@@ -12,11 +12,7 @@
 *
 * Change history: 28/10/2025 - Created module for Computer Architecture Lab 6
 *                 7/11/2025 - Added Jump and a second ALUSrc signal to support jump, turned MemtoReg into 2 bits
-<<<<<<< HEAD
 *                 9/11/2025 - Added I-Type, LUI, AUIPC, and HALT support
-=======
-*                 10/11/2025 - Added I-Type, LUI, AUIPC, and HALT support
->>>>>>> 25a8ff37b7c4523f1ba239014727bdc50635f08f
 **********************************************************************/
 
 
@@ -115,7 +111,6 @@ module ControlUnit (
             end
             
             
-<<<<<<< HEAD
             `OPCODE_LUI: begin
                 Branch = 0;
                 MemRead = 0;
@@ -129,9 +124,6 @@ module ControlUnit (
             end
             
             `OPCODE_AUIPC: begin
-=======
-            `OPCODE_LUI, `OPCODE_AUIPC: begin
->>>>>>> 25a8ff37b7c4523f1ba239014727bdc50635f08f
                 Branch = 0;
                 MemRead = 0;
                 MemtoReg = `MEMTOREG_ALU;
@@ -141,14 +133,8 @@ module ControlUnit (
                 ALUSrc_2 = 1;
                 RegWrite = 1;
                 Jump = 0;
-<<<<<<< HEAD
             
             end
-=======
-            end
-            
-            
->>>>>>> 25a8ff37b7c4523f1ba239014727bdc50635f08f
             // ECALL / EBREAK / FENCE / FENCE.TSO / PAUSE as well as any wrong inputs (halt)
             default: begin 
                 Branch = 0;
@@ -167,4 +153,3 @@ module ControlUnit (
     end
     
 endmodule
-
