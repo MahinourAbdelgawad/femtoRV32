@@ -21,6 +21,11 @@ module DataMem(input clk, input MemRead,  input MemWrite,input  [5:0]  addr,inpu
 //    mem[0] = 32'd5;   // loop counter (n = 5)
 //    mem[1] = 32'd0;   // sum = 0
 //    mem[2] = 32'd1;   // decrement value
+
+      mem[0] = 32'd5;   // x1 value
+      mem[1] = 32'd5;   // x2 value (equal to x1)
+      mem[2] = 32'd3;   // x3 value (less than x1)
+      mem[3] = 32'd9;   // x4 value (greater than all)
     
     end
     
