@@ -29,7 +29,7 @@ module ALU #(parameter n = 32) (
     wire [n-1:0] rca_B;
     
     
-    mux_2x1 mux(.A(B), .B(~B + 1), .sel(sel[2]), .out(rca_B));
+    mux_2x1 mux(.A(B), .B(~B + 1), .sel(sel[0]), .out(rca_B));
     
     RCA #(32) rca(.A(A), .B(rca_B), .sum(rca_sum ), .Cout(rca_Cout));
     
