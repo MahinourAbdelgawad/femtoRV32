@@ -1,5 +1,6 @@
 # CSCE 3301 – Computer Architecture  
 **Fall 2025**  
+**IN PROGRESS** 
 
 ## Project 1: femtoRV32  
 ### RISC-V FPGA Implementation and Testing  
